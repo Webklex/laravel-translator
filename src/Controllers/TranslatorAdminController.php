@@ -11,7 +11,6 @@ use Hokan22\LaravelTranslator\TranslatorFacade;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
 
 /**
  * Class TranslatorAdminController
@@ -20,16 +19,17 @@ use Illuminate\Support\Facades\Input;
  * @author   Alexander Viertel <alexander@aviertel.de>
  * @license  http://opensource.org/licenses/MIT MIT
  */
-class TranslatorAdminController extends Controller
-{
+class TranslatorAdminController extends Controller  {
+
     /**
      * Return an overview of translations
+     * @param Request $request
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index() {
-        $search = Input::get('search', '');
-        $locale = Input::get('locale', '');
+    public function index(Request $request) {
+        $search = $request->get('search', '');
+        $locale = $request->get('locale', '');
 
         $query = TranslationIdentifier::with('translations');
 
@@ -50,7 +50,7 @@ class TranslatorAdminController extends Controller
             });
         }
 
-        $trans_identifier = $query->orderBy('id')->paginate(20)->appends(Input::except('page'));
+        $trans_identifier = $query->orderBy('id')->paginate(20)->appends($request->except('page'));
 
         $available_locales = TranslatorFacade::getConfigValue('available_locales');
 
@@ -58,9 +58,9 @@ class TranslatorAdminController extends Controller
             [
                 'identifier'        =>  $trans_identifier,
                 'available_locales' =>  $available_locales,
-                'page'              =>  Input::get('page'),
-                'query_locale'      =>  Input::get('locale'),
-                'search'            =>  Input::get('search'),
+                'page'              =>  $request->get('page'),
+                'query_locale'      =>  $request->get('locale'),
+                'search'            =>  $request->get('search'),
             ]
         );
     }
@@ -68,10 +68,12 @@ class TranslatorAdminController extends Controller
     /**
      * Return the edit view for a translation with $id
      *
+     * @param Request $request
      * @param integer $id ID of the translation Identifier to edit
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id) {
+    public function edit(Request $request, $id) {
         $identifier = TranslationIdentifier::findOrFail($id);
 
         $available_locales = TranslatorFacade::getConfigValue('available_locales');
@@ -80,9 +82,9 @@ class TranslatorAdminController extends Controller
             [
                 'identifier'        =>  $identifier,
                 'available_locales' =>  $available_locales,
-                'page'              =>  Input::get('page'),
-                'locale'            =>  Input::get('locale'),
-                'search'            =>  Input::get('search'),
+                'page'              =>  $request->get('page'),
+                'locale'            =>  $request->get('locale'),
+                'search'            =>  $request->get('search'),
             ]
         );
     }
@@ -120,7 +122,7 @@ class TranslatorAdminController extends Controller
             DB::update("UPDATE `translation_identifiers` SET `updated_at` = '$timestamp' WHERE `id` LIKE $id");
         }
 
-        return $this->edit($id);
+        return $this->edit($request, $id);
     }
 
     /**
@@ -145,7 +147,7 @@ class TranslatorAdminController extends Controller
 
             $translation_identifier->save();
         }
-        return $this->index();
+        return $this->index($request);
     }
 
     /**

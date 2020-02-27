@@ -95,7 +95,7 @@ class CacheTranslationCommand extends Command
     /**
      * Get all used groups from translation identifiers
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function getGroups() {
         return DB::table('translation_identifiers')->select('group')->groupBy(['group'])->get()->pluck('group');

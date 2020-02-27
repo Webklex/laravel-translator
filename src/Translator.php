@@ -23,7 +23,7 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
  */
 class Translator
 {
-    /** @var array|HandlerInterface[] $aHandler Class to Handle the Translation defined in config */
+    /** @var array|DefaultHandler[] $aHandler Class to Handle the Translation defined in config */
     protected $aHandler = [];
     /** @var string $locale The locale to translate to  */
     protected $locale = '';

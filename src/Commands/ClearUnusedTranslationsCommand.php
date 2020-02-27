@@ -31,6 +31,10 @@ class ClearUnusedTranslationsCommand extends Command
 
     protected $folders;
     protected $extensions;
+    /**
+     * @var \Symfony\Component\Console\Helper\ProgressBar
+     */
+    private $bar;
 
 
     /**

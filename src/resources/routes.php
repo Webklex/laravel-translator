@@ -7,6 +7,8 @@
  * @license  http://opensource.org/licenses/MIT MIT
  */
 
+use Illuminate\Support\Facades\Route;
+
 if (!Hokan22\LaravelTranslator\TranslatorFacade::getConfigValue('custom_routes')) {
     Route::group(['prefix' => 'translator'], function() {
         Route::get('/test', 'Hokan22\LaravelTranslator\Controllers\TranslatorAdminController@test')->name('translator.test');
